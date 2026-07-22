@@ -1,6 +1,6 @@
 # Secrets — never commit
 .env
-
+.idea/
 # Python
 __pycache__/
 *.pyc
