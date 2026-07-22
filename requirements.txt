@@ -1,0 +1,23 @@
+# ── Core ──────────────────────────────────────────────────────
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-dotenv==1.0.1
+
+# ── Database – MongoDB ─────────────────────────────────────────
+pymongo==4.8.0
+
+# ── Auth / Security ────────────────────────────────────────────
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1              # pin — passlib incompatible with bcrypt >= 4.1
+
+# ── File uploads ───────────────────────────────────────────────
+python-multipart==0.0.12
+
+# ── Data processing ────────────────────────────────────────────
+pandas==2.2.3
+openpyxl==3.1.5            # .xlsx support
+xlrd==2.0.1                # legacy .xls support
+
+# ── Validation ─────────────────────────────────────────────────
+pydantic==2.9.2
