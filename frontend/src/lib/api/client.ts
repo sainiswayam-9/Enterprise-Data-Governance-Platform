@@ -1,9 +1,10 @@
-"use client";
-
 import axios from "axios";
 
+import { API_BASE_URL } from "@/lib/backend";
+import { toApiError } from "@/lib/api/errors";
+
 export const apiClient = axios.create({
-  baseURL: "/api",
+  baseURL: API_BASE_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -11,22 +12,20 @@ export const apiClient = axios.create({
   },
 });
 
-apiClient.interceptors.request.use((config) => {
-  config.withCredentials = true;
-  return config;
-});
-
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    const status = error.response?.status as number | undefined;
-    const requestUrl = String(error.config?.url ?? "");
-    const isAuthRequest = requestUrl.includes("/auth/login") || requestUrl.includes("/auth/me");
+    const apiError = toApiError(error);
 
-    if (typeof window !== "undefined" && !isAuthRequest && (status === 401 || status === 403)) {
-      window.location.assign(status === 403 ? "/403" : "/401");
+    if (typeof window !== "undefined" && apiError.status && [401, 403].includes(apiError.status)) {
+      const requestUrl = String((error as { config?: { url?: string } }).config?.url ?? "");
+      const isAuthRequest = requestUrl.includes("/auth/login") || requestUrl.includes("/auth/me") || requestUrl.includes("/auth/logout");
+
+      if (!isAuthRequest) {
+        window.location.assign(apiError.status === 403 ? "/403" : "/401");
+      }
     }
 
-    return Promise.reject(error);
+    return Promise.reject(apiError);
   }
 );

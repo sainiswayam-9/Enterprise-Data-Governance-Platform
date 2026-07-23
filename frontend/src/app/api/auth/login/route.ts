@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(body, { status: response.status });
   }
 
-  const loginResponse = body as LoginResponse & { access_token: string };
+  const loginResponse = body as LoginResponse;
   const safeUser = {
     username: loginResponse.username,
     role: loginResponse.role,

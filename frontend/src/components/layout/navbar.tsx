@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 import { Bell, LogOut, Menu, MoonStar, SunMedium } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -33,7 +34,8 @@ const roleLabels: Record<AppRole, string> = {
 };
 
 export function Navbar({ title, subtitle, onMenuClick }: NavbarProps) {
-  const { user, logout, status } = useAuth();
+  const router = useRouter();
+  const { user, status } = useAuth();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -102,7 +104,7 @@ export function Navbar({ title, subtitle, onMenuClick }: NavbarProps) {
                 Notifications coming soon
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => void logout()}>
+              <DropdownMenuItem onClick={() => router.push("/logout") }>
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
               </DropdownMenuItem>

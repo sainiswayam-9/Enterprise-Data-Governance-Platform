@@ -1,5 +1,7 @@
 import { APP_ROLES } from "@/lib/backend";
+import { getPermissionsForRole } from "@/lib/permissions";
 import type { AppRole } from "@/types/auth";
+import type { Permission } from "@/types/models";
 
 export interface NavigationItem {
   label: string;
@@ -7,6 +9,7 @@ export interface NavigationItem {
   description: string;
   iconKey: string;
   roles: AppRole[];
+  permissions: Permission[];
 }
 
 export interface RouteAccessRule {
@@ -23,6 +26,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     description: "Overview, metrics, and activity",
     iconKey: "layout-dashboard",
     roles: allRoles,
+    permissions: ["dashboard:read"],
   },
   {
     label: "Data Explorer",
@@ -30,6 +34,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     description: "Search and download records",
     iconKey: "database",
     roles: allRoles,
+    permissions: ["data:read", "data:download"],
   },
   {
     label: "Change Requests",
@@ -37,6 +42,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     description: "Review and resolve requests",
     iconKey: "square-pen",
     roles: ["manager", "salesperson"],
+    permissions: ["change-requests:read", "change-requests:manage"],
   },
   {
     label: "Users",
@@ -44,6 +50,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     description: "Manage user accounts and access",
     iconKey: "users",
     roles: ["manager", "hr"],
+    permissions: ["users:read", "users:manage"],
   },
   {
     label: "Reports",
@@ -51,6 +58,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     description: "Export and audit operational data",
     iconKey: "bar-chart-3",
     roles: ["manager", "hr"],
+    permissions: ["reports:read"],
   },
   {
     label: "Settings",
@@ -58,6 +66,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     description: "Appearance and workspace preferences",
     iconKey: "settings-2",
     roles: allRoles,
+    permissions: ["settings:read"],
   },
 ];
 
@@ -86,7 +95,10 @@ export function getVisibleNavigationItems(role: AppRole | null) {
     return [];
   }
 
-  return NAVIGATION_ITEMS.filter((item) => item.roles.includes(role));
+  const rolePermissions = getPermissionsForRole(role);
+  return NAVIGATION_ITEMS.filter(
+    (item) => item.roles.includes(role) && item.permissions.some((permission) => rolePermissions.includes(permission))
+  );
 }
 
 export function getDefaultRouteForRole(role: AppRole) {

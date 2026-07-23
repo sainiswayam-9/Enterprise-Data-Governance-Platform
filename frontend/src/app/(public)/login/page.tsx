@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowRight, Database, LockKeyhole, ShieldCheck, Users } from "lucide-react";
 
@@ -79,7 +80,9 @@ export default function LoginPage() {
         </section>
 
         <section id="login" className="w-full max-w-xl justify-self-center lg:justify-self-end">
-          <LoginForm />
+          <Suspense fallback={<div className="h-96 rounded-2xl border border-border/60 bg-card/70 animate-pulse" />}>
+            <LoginForm />
+          </Suspense>
         </section>
       </div>
     </main>

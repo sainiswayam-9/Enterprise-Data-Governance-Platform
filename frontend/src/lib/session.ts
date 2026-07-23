@@ -23,7 +23,7 @@ export async function getServerSessionFromToken(token: string): Promise<AuthUser
 }
 
 export async function getServerSession(): Promise<AuthUser | null> {
-  const token = cookies().get(AUTH_COOKIE_NAME)?.value;
+  const token = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
   if (!token) {
     return null;
   }
